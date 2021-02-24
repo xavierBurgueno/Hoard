@@ -2,20 +2,32 @@
 
 
 #include "SHCharacter.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values
 ASHCharacter::ASHCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//I added this for testing purposes
+	
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->SetupAttachment(RootComponent);
+
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	CameraComp->SetupAttachment(SpringArmComp);
 }
 
 // Called when the game starts or when spawned
 void ASHCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
 }
 
 
@@ -30,6 +42,19 @@ void ASHCharacter::MoveRight(float Value)
 	AddMovementInput(GetActorRightVector() * Value);
 }
 
+
+void ASHCharacter::OnBeginCrouch()
+{
+	UE_LOG(LogTemp, Warning, TEXT("We are Crouching"));
+	Crouch();
+}
+
+void ASHCharacter::OnEndCrouch()
+{
+	UE_LOG(LogTemp, Warning, TEXT("We stood up now"));
+
+	UnCrouch();
+}
 
 // Called every frame
 void ASHCharacter::Tick(float DeltaTime)
@@ -49,5 +74,8 @@ void ASHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	
 	PlayerInputComponent->BindAxis("LookUp", this, &ASHCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &ASHCharacter::AddControllerYawInput);
+
+	PlayerInputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ASHCharacter::OnBeginCrouch);
+	PlayerInputComponent->BindAction("Crouch", EInputEvent::IE_Released, this, &ASHCharacter::OnEndCrouch);
 }
 

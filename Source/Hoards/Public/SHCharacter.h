@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "SHCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
 UCLASS()
 class HOARDS_API ASHCharacter : public ACharacter
 {
@@ -15,7 +18,7 @@ public:
 	// Sets default values for this character's properties
 	ASHCharacter();
 
-protected:
+protected: 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -23,7 +26,15 @@ protected:
 
 	void MoveRight(float Value);
 
+	void OnBeginCrouch();
 
+	void OnEndCrouch();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USpringArmComponent* SpringArmComp;
 
 public:	
 	// Called every frame
