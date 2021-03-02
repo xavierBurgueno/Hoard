@@ -45,15 +45,18 @@ void ASHCharacter::MoveRight(float Value)
 
 void ASHCharacter::OnBeginCrouch()
 {
-	UE_LOG(LogTemp, Warning, TEXT("We are Crouching"));
 	Crouch();
 }
 
 void ASHCharacter::OnEndCrouch()
 {
-	UE_LOG(LogTemp, Warning, TEXT("We stood up now"));
-
 	UnCrouch();
+}
+
+void ASHCharacter::JumpUp()
+{
+
+	Jump();
 }
 
 // Called every frame
@@ -77,5 +80,7 @@ void ASHCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ASHCharacter::OnBeginCrouch);
 	PlayerInputComponent->BindAction("Crouch", EInputEvent::IE_Released, this, &ASHCharacter::OnEndCrouch);
+
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASHCharacter::Jump);
 }
 
