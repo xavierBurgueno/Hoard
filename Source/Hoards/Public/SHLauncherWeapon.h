@@ -14,4 +14,11 @@ class HOARDS_API ASHLauncherWeapon : public ASHWeapon
 {
 	GENERATED_BODY()
 	
+
+protected:
+	virtual void Fire() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ProjectileWeapon")
+	TSubclassOf<AActor> ProjectileClass;
+
 };
